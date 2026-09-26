@@ -554,18 +554,18 @@ set 1.4 | Set Alive Message
                     caption: menuText 
                 }, { quoted: msg });
           }
-          // ================= REPLIED NUMBER HANDLER (FULL CODE) =================
+          
+// ------------ REPLIED NUMBER HANDLER ------------
 const isQuoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-const quotedCaption = isQuoted?.imageMessage?.caption || 
-                      isQuoted?.conversation || 
-                      isQuoted?.extendedTextMessage?.text || 
-                      msg.message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage?.caption || "";
+const quotedCaption = isQuoted ? (
+    isQuoted.conversation ||
+    isQuoted.extendedTextMessage?.text ||
+    isQuoted.imageMessage?.caption || ''
+) : '';
 
-const userMsg = (body || text || msg.message?.conversation || msg.message?.extendedTextMessage?.text || "").trim();
+const userMsg = (msg.message?.conversation || msg.message?.extendedTextMessage?.text || '').trim();
 
-if (isQuoted && (quotedCaption.includes("LIST MENU") || quotedCaption.includes("COMMANDS PANEL"))) {
-    const listLogo = config.BOT_LOGO || "./bot_logo.jpg";
-    let selectedMenu = "";
+if (isQuoted && (quotedCaption.includes('LIST MENU') || quotedCaption.includes('COMMANDS PANEL'))) {
 
     switch (userMsg) {
         case "1":
