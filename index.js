@@ -58,16 +58,16 @@ function getUptime() {
     const hours = Math.floor(minutes / 60);
     return `${hours > 0 ? hours + ' hours, ' : ''}${minutes % 60} minutes, ${seconds} seconds`;
 }
+}
 
-async function startBot() 
-
-// Process Level Errors Handle කිරීම (Crash වීම සහ Error Spam වීම වැළැක්වීමට)
+// Process Level Errors Handle කිරීම (Crash වීම සහ Error Span වීම වැළැක්වීමට)
 process.on('uncaughtException', function (err) {
     let e = String(err);
     if (e.includes('Bad MAC') || e.includes('Session error') || e.includes('MessageCounterError')) return;
     console.error('CRASH ERROR:', err);
 });
 
+async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('session');
     let config = getConfig();
 
