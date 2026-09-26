@@ -59,7 +59,15 @@ function getUptime() {
     return `${hours > 0 ? hours + ' hours, ' : ''}${minutes % 60} minutes, ${seconds} seconds`;
 }
 
-async function startBot() {
+async function startBot() 
+
+// Process Level Errors Handle කිරීම (Crash වීම සහ Error Spam වීම වැළැක්වීමට)
+process.on('uncaughtException', function (err) {
+    let e = String(err);
+    if (e.includes('Bad MAC') || e.includes('Session error') || e.includes('MessageCounterError')) return;
+    console.error('CRASH ERROR:', err);
+});
+{
     const { state, saveCreds } = await useMultiFileAuthState('session');
     let config = getConfig();
 
@@ -126,6 +134,270 @@ async function startBot() {
 
             const isCmd = body.startsWith('.');
             const trimmedBody = body.trim();
+            // ------------ REPLIED NUMBER HANDLER ------------
+const type = Object.keys(msg.message || {})[0];
+const isQuoted = type === 'extendedTextMessage' && msg.message.extendedTextMessage.contextInfo?.quotedMessage;
+
+let quotedCaption = '';
+if (isQuoted) {
+    const qMsg = msg.message.extendedTextMessage.contextInfo.quotedMessage;
+    quotedCaption = qMsg.conversation || 
+                    qMsg.extendedTextMessage?.text || 
+                    qMsg.imageMessage?.caption || '';
+}
+
+if (isQuoted && (quotedCaption.includes('LIST MENU') || quotedCaption.includes('COMMANDS PANEL'))) {
+    const listLogo = config.BOT_LOGO || './bot_logo.jpg';
+    let selectedMenu = '';
+
+    switch (trimmedBody) {
+        case '1':
+            selectedMenu = `╭━━━〔 CONVERT MENU 〕━━━┈
+│► .mp3tourl
+│► .dark
+│► .blur
+│► .toaudio
+│► .toptt
+│► .remini
+│► .img2qr
+│► .removebg
+│► .toqr
+│► .subtr
+│► .splitmedia
+│► .surl
+│► .tts
+│► .wame
+│► .img2url
+│► .fancy
+│► .trt
+│► .toimg
+│► .pdf
+│► .emomix
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '2':
+            selectedMenu = `╭━━━〔 OWNER MENU 〕━━━┈
+│► .removesticker
+│► .resetsticker
+│► .getsticker
+│► .addsticker
+│► .addbad
+│► .resetbad
+│► .getbad
+│► .resetvoice
+│► .removevoice
+│► .getvoice
+│► .addvoice
+│► .replacereply
+│► .removereply
+│► .getreply
+│► .resetreply
+│► .addreply
+│► .update
+│► .getpp
+│► .enc
+│► .dec
+│► .boom
+│► .vv
+│► .tovv
+│► .send
+│► .deljid
+│► .dp
+│► .sendtag
+│► .sendmsg
+│► .remove
+│► .backup
+│► .restore
+│► .reset
+│► .note
+│► .myenv
+│► .dsn
+│► .report
+│► .quote
+│► .alljid
+│► .restart
+│► .join
+│► .about
+│► .theme
+│► .addseedr
+│► .addcmd
+│► .getcmd
+│► .delcmd
+│► .resetcmd
+│► .eval
+│► .setup
+│► .tgauth
+│► .tgconfig
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '3':
+            selectedMenu = `╭━━━〔 MAIN MENU 〕━━━┈
+│► .pair
+│► .logo
+│► .edit
+│► .tempmail
+│► .rename
+│► .bingen
+│► .dictionary
+│► .readmore
+│► .device
+│► .newgroup
+│► .delgroup
+│► .save
+│► .block
+│► .unblock
+│► .help
+│► .id
+│► .settings
+│► .apply
+│► .defaultimg
+│► .defaultfooter
+│► .list
+│► .menu
+│► .alive
+│► .jid
+│► .system
+│► .ping
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '4':
+            selectedMenu = `╭━━━〔 MATHTOOL MENU 〕━━━┈
+│► .mathstep
+│► .math
+│► .cal
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '5':
+            selectedMenu = `╭━━━〔 DOWNLOAD MENU 〕━━━┈
+│► .tgvideo
+│► .downurl
+│► .threads
+│► .twitter
+│► .pinterest
+│► .pastpaper
+│► .teradl
+│► .gitclone
+│► .tiktok
+│► .fb
+│► .ig
+│► .apk
+│► .gdrive
+│► .mediafire
+│► .ss
+│► .video
+│► .song
+│► .seedr
+│► .anime
+│► .sisub
+│► .mega
+│► .movie
+│► .xvdl
+│► .tgup
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '6':
+            selectedMenu = `╭━━━〔 SEARCH MENU 〕━━━┈
+│► .tiktoksearch
+│► .findtiktok
+│► .findapk
+│► .pixabay
+│► .unsplash
+│► .ip
+│► .cric
+│► .find
+│► .yts
+│► .npm
+│► .wabeta
+│► .movieinfo
+│► .weather
+│► .lyrics
+│► .git
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '7':
+            selectedMenu = `╭━━━〔 AI MENU 〕━━━┈
+│► .imagine
+│► .ai
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '8':
+            selectedMenu = `╭━━━〔 GROUP MENU 〕━━━┈
+│► .gdp
+│► .automute
+│► .timer
+│► .gsetting
+│► .safemode
+│► .ingsettings
+│► .ban
+│► .unban
+│► .invite
+│► .mute
+│► .unmute
+│► .promote
+│► .demote
+│► .kick
+│► .add
+│► .hidetag
+│► .tagall
+│► .gdesc
+│► .gname
+│► .left
+│► .antispam
+│► .del
+│► .delopt
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '9':
+            selectedMenu = `╭━━━〔 CHANNEL MENU 〕━━━┈
+│► .cinfo
+│► .cupd
+│► .creact
+│► .csong
+│► .ctiktok
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '10':
+            selectedMenu = `╭━━━〔 GAME MENU 〕━━━┈
+│► .xo
+│► .delxo
+│► .guess
+│► .trivia
+│► .chess
+│► .hangman
+│► .scramble
+│► .slot
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '11':
+            selectedMenu = `╭━━━〔 STICKER MENU 〕━━━┈
+│► .attp
+│► .ttp
+│► .searchsticker
+│► .sticker
+│► .steal
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+        case '12':
+            selectedMenu = `╭━━━〔 SUBBOT MENU 〕━━━┈
+│► .subcheck
+│► .subbot
+│► .getsubbot
+│► .delsubbot
+│► .delallsubbot
+│► .restartsubbot
+│► .restartallsubbot
+│► .helpsubbot
+╰━━━━━━━━━━━━━━━━━━━┈`;
+            break;
+    }
+
+    if (selectedMenu !== '') {
+        return await sock.sendMessage(from, {
+            image: { url: listLogo },
+            caption: selectedMenu
+        }, { quoted: msg });
+    }
+}
 
             // SETTINGS NUMERIC TOGGLE HANDLER (1.1, 1.2, etc.)
             const settingOptions = [
