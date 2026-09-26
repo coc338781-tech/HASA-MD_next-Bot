@@ -828,7 +828,7 @@ set 1.4 | Set Alive Message
           }
           
 // ------------ REPLIED NUMBER HANDLER (FIXED & COMPLETE) ------------
-const type = Object.keys(msg.message || {})[0];
+type = Object.keys(msg.message || {})[0];
 const isQuoted = type === 'extendedTextMessage' && msg.message.extendedTextMessage.contextInfo?.quotedMessage;
 
 let quotedCaption = '';
