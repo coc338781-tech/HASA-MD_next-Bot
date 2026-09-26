@@ -67,7 +67,7 @@ process.on('uncaughtException', function (err) {
     if (e.includes('Bad MAC') || e.includes('Session error') || e.includes('MessageCounterError')) return;
     console.error('CRASH ERROR:', err);
 });
-{
+
     const { state, saveCreds } = await useMultiFileAuthState('session');
     let config = getConfig();
 
