@@ -58,7 +58,7 @@ function getUptime() {
     const hours = Math.floor(minutes / 60);
     return `${hours > 0 ? hours + ' hours, ' : ''}${minutes % 60} minutes, ${seconds} seconds`;
 }
-}
+
 
 // Process Level Errors Handle කිරීම (Crash වීම සහ Error Span වීම වැළැක්වීමට)
 process.on('uncaughtException', function (err) {
