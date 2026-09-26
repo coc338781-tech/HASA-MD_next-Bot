@@ -1,11 +1,11 @@
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, downloadContentFromMessage } = (await import('@whiskeysockets/baileys'));
-const pino = require('pino');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const readline = require('readline');
-const { exec } = require('child_process');
-const axios = require('axios');
+import makeWASocket, { useMultiFileAuthState, DisconnectReason, downloadContentFromMessage } from '@whiskeysockets/baileys';
+import pino from 'pino';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import readline from 'readline';
+import { exec } from 'child_process';
+import axios from 'axios';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 const question = (text) => new Promise((resolve) => rl.question(text, resolve));
