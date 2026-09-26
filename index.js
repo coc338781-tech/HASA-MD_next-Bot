@@ -555,18 +555,27 @@ set 1.4 | Set Alive Message
                 }, { quoted: msg });
           }
           
-// ------------ REPLIED NUMBER HANDLER ------------
-const isQuoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-const quotedCaption = isQuoted ? (
-    isQuoted.conversation ||
-    isQuoted.extendedTextMessage?.text ||
-    isQuoted.imageMessage?.caption || ''
-) : '';
+// ------------ REPLIED NUMBER HANDLER (FIXED & COMPLETE) ------------
+const type = Object.keys(msg.message || {})[0];
+const isQuoted = type === 'extendedTextMessage' && msg.message.extendedTextMessage.contextInfo?.quotedMessage;
 
-const userMsg = (msg.message?.conversation || msg.message?.extendedTextMessage?.text || '').trim();
+let quotedCaption = '';
+if (isQuoted) {
+    const qMsg = msg.message.extendedTextMessage.contextInfo.quotedMessage;
+    quotedCaption = qMsg.conversation || 
+                    qMsg.extendedTextMessage?.text || 
+                    qMsg.imageMessage?.caption || '';
+}
+
+const userMsg = (
+    msg.message?.conversation || 
+    msg.message?.extendedTextMessage?.text || 
+    ''
+).trim();
 
 if (isQuoted && (quotedCaption.includes('LIST MENU') || quotedCaption.includes('COMMANDS PANEL'))) {
-
+    const listLogo = config.BOT_LOGO || './bot_logo.jpg';
+    let selectedMenu = '';
     switch (userMsg) {
         case "1":
             selectedMenu = `╭──────────●●►\n*│📜 CONVERT COMMANDS*\n│   ───────\n*│►* .mp3tourl\n*│►* .dark\n*│►* .blur\n*│►* .toaudio\n*│►* .toptt\n*│►* .remini\n*│►* .img2qr\n*│►* .removebg\n*│►* .toqr\n*│►* .subtr\n*│►* .splitmedia\n*│►* .surl\n*│►* .tts\n*│►* .wame\n*│►* .img2url\n*│►* .fancy\n*│►* .trt\n*│►* .toimg\n*│►* .pdf\n*│►* .emomix\n╰───────────●●►`;
@@ -606,13 +615,14 @@ if (isQuoted && (quotedCaption.includes('LIST MENU') || quotedCaption.includes('
             break;
     }
 
-    if (selectedMenu !== "") {
-        return await sock.sendMessage(from, { 
-            image: { url: listLogo }, 
-            caption: selectedMenu 
+    if (selectedMenu !== '') {
+        return await sock.sendMessage(from, {
+            image: { url: listLogo },
+            caption: selectedMenu
         }, { quoted: msg });
     }
 }
+// ---------------------------------------------------------------------
 
             // 4. LIST COMMAND
             // ==========================================
