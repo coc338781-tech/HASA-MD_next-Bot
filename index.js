@@ -8,7 +8,23 @@ import path from 'path';
 import readline from 'readline';
 import { exec } from 'child_process';
 import axios from 'axios';
+// Plugins Loader
+const commands = new Map();
+const pluginsPath = path.join(process.cwd(), 'plugins');
 
+if (fs.existsSync(pluginsPath)) {
+    const pluginFiles = fs.readdirSync(pluginsPath).filter(file => file.endsWith('.js'));
+    for (const file of pluginFiles) {
+        try {
+            const command = createRequire(import.meta.url)(`./plugins/${file}`);
+            if (command.default?.name || command.name) {
+                commands.set(command.default?.name || command.name, command.default || command);
+            }
+        } catch (e) {
+            console.error(`Error loading plugin ${file}:`, e);
+        }
+    }
+}
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 const question = (text) => new Promise((resolve) => rl.question(text, resolve));
 
@@ -134,6 +150,23 @@ async function startBot() {
 
             const isCmd = body.startsWith('.');
             const trimmedBody = body.trim();
+            // Subbot Dynamic Plugin Handler
+        const currentCmd = trimmedBody.startsWith('.') ? trimmedBody.slice(1).trim().split(/ +/).shift().toLowerCase() : '';
+
+        if (commands.has('subbot')) {
+            const subbotPlugin = commands.get('subbot');
+            const subCommands = ['subbot', 'subcheck', 'getsubbot', 'delsubbot', 'delallsubbot', 'restartsubbot', 'restartallsubbot', 'helpsubbot'];
+            
+            if (subCommands.includes(currentCmd)) {
+                try {
+                    const args = trimmedBody.trim().split(/ +/).slice(1);
+                    await subbotPlugin.execute(sock, msg, args, currentCmd);
+                    return;
+                } catch (err) {
+                    console.error('Subbot plugin error:', err);
+                }
+            }
+        }
             // ------------ REPLIED NUMBER HANDLER ------------
 const type = Object.keys(msg.message || {})[0];
 const isQuoted = type === 'extendedTextMessage' && msg.message.extendedTextMessage.contextInfo?.quotedMessage;
