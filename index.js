@@ -827,63 +827,249 @@ set 1.4 | Set Alive Message
                 }, { quoted: msg });
           }
           
-// ------------ REPLIED NUMBER HANDLER (FIXED & COMPLETE) ------------
-type = Object.keys(msg.message || {})[0];
-const isQuoted = type === 'extendedTextMessage' && msg.message.extendedTextMessage.contextInfo?.quotedMessage;
-
-let quotedCaption = '';
-if (isQuoted) {
-    const qMsg = msg.message.extendedTextMessage.contextInfo.quotedMessage;
-    quotedCaption = qMsg.conversation || 
-                    qMsg.extendedTextMessage?.text || 
-                    qMsg.imageMessage?.caption || '';
-}
-
-const userMsg = (
-    msg.message?.conversation || 
-    msg.message?.extendedTextMessage?.text || 
-    ''
-).trim();
-
-if (isQuoted && (quotedCaption.includes('LIST MENU') || quotedCaption.includes('COMMANDS PANEL'))) {
+// ------------ REPLIED NUMBER HANDLER ------------
+if (typeof isQuoted !== 'undefined' && isQuoted && (quotedCaption.includes('LIST MENU') || quotedCaption.includes('COMMANDS PANEL'))) {
     const listLogo = config.BOT_LOGO || './bot_logo.jpg';
     let selectedMenu = '';
+
     switch (userMsg) {
-        case "1":
-            selectedMenu = `╭──────────●●►\n*│📜 CONVERT COMMANDS*\n│   ───────\n*│►* .mp3tourl\n*│►* .dark\n*│►* .blur\n*│►* .toaudio\n*│►* .toptt\n*│►* .remini\n*│►* .img2qr\n*│►* .removebg\n*│►* .toqr\n*│►* .subtr\n*│►* .splitmedia\n*│►* .surl\n*│►* .tts\n*│►* .wame\n*│►* .img2url\n*│►* .fancy\n*│►* .trt\n*│►* .toimg\n*│►* .pdf\n*│►* .emomix\n╰───────────●●►`;
+        case '1':
+            selectedMenu = `╭━━━〔 CONVERT MENU 〕━━━┈
+│► .mp3tourl
+│► .dark
+│► .blur
+│► .toaudio
+│► .toptt
+│► .remini
+│► .img2qr
+│► .removebg
+│► .toqr
+│► .subtr
+│► .splitmedia
+│► .surl
+│► .tts
+│► .wame
+│► .img2url
+│► .fancy
+│► .trt
+│► .toimg
+│► .pdf
+│► .emomix
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "2":
-            selectedMenu = `╭──────────●●►\n*│📜 OWNER COMMANDS*\n│   ───────\n*│►* .removesticker\n*│►* .resetsticker\n*│►* .getsticker\n*│►* .addsticker\n*│►* .addbad\n*│►* .resetbad\n*│►* .getbad\n*│►* .resetvoice\n*│►* .removevoice\n*│►* .getvoice\n*│►* .addvoice\n*│►* .replacereply\n*│►* .removereply\n*│►* .getreply\n*│►* .resetreply\n*│►* .addreply\n*│►* .update\n*│►* .getpp\n*│►* .enc\n*│►* .dec\n*│►* .boom\n*│►* .vv\n*│►* .tovv\n*│►* .send\n*│►* .deljid\n*│►* .dp\n*│►* .sendtag\n*│►* .sendmsg\n*│►* .remove\n*│►* .backup\n*│►* .restore\n*│►* .reset\n*│►* .note\n*│►* .myenv\n*│►* .dsn\n*│►* .report\n*│►* .quote\n*│►* .alljid\n*│►* .restart\n*│►* .join\n*│►* .about\n*│►* .theme\n*│►* .addseedr\n*│►* .addcmd\n*│►* .getcmd\n*│►* .delcmd\n*│►* .resetcmd\n*│►* .eval\n*│►* .setup\n*│►* .tgauth\n*│►* .tgconfig\n╰───────────●●►`;
+        case '2':
+            selectedMenu = `╭━━━〔 OWNER MENU 〕━━━┈
+│► .removesticker
+│► .resetsticker
+│► .getsticker
+│► .addsticker
+│► .addbad
+│► .resetbad
+│► .getbad
+│► .resetvoice
+│► .removevoice
+│► .getvoice
+│► .addvoice
+│► .replacereply
+│► .removereply
+│► .getreply
+│► .resetreply
+│► .addreply
+│► .update
+│► .getpp
+│► .enc
+│► .dec
+│► .boom
+│► .vv
+│► .tovv
+│► .send
+│► .deljid
+│► .dp
+│► .sendtag
+│► .sendmsg
+│► .remove
+│► .backup
+│► .restore
+│► .reset
+│► .note
+│► .myenv
+│► .dsn
+│► .report
+│► .quote
+│► .alljid
+│► .restart
+│► .join
+│► .about
+│► .theme
+│► .addseedr
+│► .addcmd
+│► .getcmd
+│► .delcmd
+│► .resetcmd
+│► .eval
+│► .setup
+│► .tgauth
+│► .tgconfig
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "3":
-            selectedMenu = `╭──────────●●►\n*│📜 MAIN COMMANDS*\n│   ───────\n*│►* .pair\n*│►* .logo\n*│►* .edit\n*│►* .tempmail\n*│►* .rename\n*│►* .bingen\n*│►* .dictionary\n*│►* .readmore\n*│►* .device\n*│►* .newgroup\n*│►* .delgroup\n*│►* .save\n*│►* .block\n*│►* .unblock\n*│►* .help\n*│►* .id\n*│►* .settings\n*│►* .apply\n*│►* .defaultimg\n*│►* .defaultfooter\n*│►* .list\n*│►* .menu\n*│►* .alive\n*│►* .jid\n*│►* .system\n*│►* .ping\n╰───────────●●►`;
+        case '3':
+            selectedMenu = `╭━━━〔 MAIN MENU 〕━━━┈
+│► .pair
+│► .logo
+│► .edit
+│► .tempmail
+│► .rename
+│► .bingen
+│► .dictionary
+│► .readmore
+│► .device
+│► .newgroup
+│► .delgroup
+│► .save
+│► .block
+│► .unblock
+│► .help
+│► .id
+│► .settings
+│► .apply
+│► .defaultimg
+│► .defaultfooter
+│► .list
+│► .menu
+│► .alive
+│► .jid
+│► .system
+│► .ping
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "4":
-            selectedMenu = `╭──────────●●►\n*│📜 MATHTOOL COMMANDS*\n│   ───────\n*│►* .mathstep\n*│►* .math\n*│►* .cal\n╰───────────●●►`;
+        case '4':
+            selectedMenu = `╭━━━〔 MATHTOOL MENU 〕━━━┈
+│► .mathstep
+│► .math
+│► .cal
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "5":
-            selectedMenu = `╭──────────●●►\n*│📜 DOWNLOAD COMMANDS*\n│   ───────\n*│►* .tgvideo\n*│►* .downurl\n*│►* .threads\n*│►* .twitter\n*│►* .pinterest\n*│►* .pastpaper\n*│►* .teradl\n*│►* .gitclone\n*│►* .tiktok\n*│►* .fb\n*│►* .ig\n*│►* .apk\n*│►* .gdrive\n*│►* .mediafire\n*│►* .ss\n*│►* .video\n*│►* .song\n*│►* .seedr\n*│►* .anime\n*│►* .sisub\n*│►* .mega\n*│►* .movie\n*│►* .xvdl\n*│►* .tgup\n╰───────────●●►`;
+        case '5':
+            selectedMenu = `╭━━━〔 DOWNLOAD MENU 〕━━━┈
+│► .tgvideo
+│► .downurl
+│► .threads
+│► .twitter
+│► .pinterest
+│► .pastpaper
+│► .teradl
+│► .gitclone
+│► .tiktok
+│► .fb
+│► .ig
+│► .apk
+│► .gdrive
+│► .mediafire
+│► .ss
+│► .video
+│► .song
+│► .seedr
+│► .anime
+│► .sisub
+│► .mega
+│► .movie
+│► .xvdl
+│► .tgup
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "6":
-            selectedMenu = `╭──────────●●►\n*│📜 SEARCH COMMANDS*\n│   ───────\n*│►* .tiktoksearch\n*│►* .findtiktok\n*│►* .findapk\n*│►* .pixabay\n*│►* .unsplash\n*│►* .ip\n*│►* .cric\n*│►* .find\n*│►* .yts\n*│►* .npm\n*│►* .wabeta\n*│►* .movieinfo\n*│►* .weather\n*│►* .lyrics\n*│►* .git\n╰───────────●●►`;
+        case '6':
+            selectedMenu = `╭━━━〔 SEARCH MENU 〕━━━┈
+│► .tiktoksearch
+│► .findtiktok
+│► .findapk
+│► .pixabay
+│► .unsplash
+│► .ip
+│► .cric
+│► .find
+│► .yts
+│► .npm
+│► .wabeta
+│► .movieinfo
+│► .weather
+│► .lyrics
+│► .git
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "7":
-            selectedMenu = `╭──────────●●►\n*│📜 AI COMMANDS*\n│   ───────\n*│►* .imagine\n*│►* .ai\n╰───────────●●►`;
+        case '7':
+            selectedMenu = `╭━━━〔 AI MENU 〕━━━┈
+│► .imagine
+│► .ai
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "8":
-            selectedMenu = `╭──────────●●►\n*│📜 GROUP COMMANDS*\n│   ───────\n*│►* .gdp\n*│►* .automute\n*│►* .timer\n*│►* .gsetting\n*│►* .safemode\n*│►* .ingsettings\n*│►* .ban\n*│►* .unban\n*│►* .invite\n*│►* .mute\n*│►* .unmute\n*│►* .promote\n*│►* .demote\n*│►* .kick\n*│►* .add\n*│►* .hidetag\n*│►* .tagall\n*│►* .gdesc\n*│►* .gname\n*│►* .left\n*│►* .antispam\n*│►* .del\n*│►* .delopt\n╰───────────●●►`;
+        case '8':
+            selectedMenu = `╭━━━〔 GROUP MENU 〕━━━┈
+│► .gdp
+│► .automute
+│► .timer
+│► .gsetting
+│► .safemode
+│► .ingsettings
+│► .ban
+│► .unban
+│► .invite
+│► .mute
+│► .unmute
+│► .promote
+│► .demote
+│► .kick
+│► .add
+│► .hidetag
+│► .tagall
+│► .gdesc
+│► .gname
+│► .left
+│► .antispam
+│► .del
+│► .delopt
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "9":
-            selectedMenu = `╭──────────●●►\n*│📜 CHANNEL COMMANDS*\n│   ───────\n*│►* .cinfo\n*│►* .cupd\n*│►* .creact\n*│►* .csong\n*│►* .ctiktok\n╰───────────●●►`;
+        case '9':
+            selectedMenu = `╭━━━〔 CHANNEL MENU 〕━━━┈
+│► .cinfo
+│► .cupd
+│► .creact
+│► .csong
+│► .ctiktok
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "10":
-            selectedMenu = `╭──────────●●►\n*│📜 GAME COMMANDS*\n│   ───────\n*│►* .xo\n*│►* .delxo\n*│►* .guess\n*│►* .trivia\n*│►* .chess\n*│►* .hangman\n*│►* .scramble\n*│►* .slot\n╰───────────●●►`;
+        case '10':
+            selectedMenu = `╭━━━〔 GAME MENU 〕━━━┈
+│► .xo
+│► .delxo
+│► .guess
+│► .trivia
+│► .chess
+│► .hangman
+│► .scramble
+│► .slot
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "11":
-            selectedMenu = `╭──────────●●►\n*│📜 STICKER COMMANDS*\n│   ───────\n*│►* .attp\n*│►* .ttp\n*│►* .searchsticker\n*│►* .sticker\n*│►* .steal\n╰───────────●●►`;
+        case '11':
+            selectedMenu = `╭━━━〔 STICKER MENU 〕━━━┈
+│► .attp
+│► .ttp
+│► .searchsticker
+│► .sticker
+│► .steal
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
-        case "12":
-            selectedMenu = `╭──────────●●►\n*│📜 SUBBOT COMMANDS*\n│   ───────\n*│►* .subcheck\n*│►* .subbot\n*│►* .getsubbot\n*│►* .delsubbot\n*│►* .delallsubbot\n*│►* .restartsubbot\n*│►* .restartallsubbot\n*│►* .helpsubbot\n╰───────────●●►`;
+        case '12':
+            selectedMenu = `╭━━━〔 SUBBOT MENU 〕━━━┈
+│► .subcheck
+│► .subbot
+│► .getsubbot
+│► .delsubbot
+│► .delallsubbot
+│► .restartsubbot
+│► .restartallsubbot
+│► .helpsubbot
+╰━━━━━━━━━━━━━━━━━━━┈`;
             break;
     }
 
