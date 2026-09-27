@@ -151,7 +151,8 @@ async function startBot() {
             const isCmd = body.startsWith('.');
             const trimmedBody = body.trim();
             // Subbot Dynamic Plugin Handler
-        const currentCmd = trimmedBody.startsWith('.') ? trimmedBody.slice(1).trim().split(/ +/).shift().toLowerCase() : '';
+        const cleanBody = trimmedBody.startsWith('.') ? trimmedBody.slice(1) : trimmedBody;
+        const currentCmd = cleanBody.trim().split(/ +/).shift().toLowerCase();
 
         if (commands.has('subbot')) {
             const subbotPlugin = commands.get('subbot');
@@ -159,7 +160,7 @@ async function startBot() {
             
             if (subCommands.includes(currentCmd)) {
                 try {
-                    const args = trimmedBody.trim().split(/ +/).slice(1);
+                    const args = cleanBody.trim().split(/ +/).slice(1);
                     await subbotPlugin.execute(sock, msg, args, currentCmd);
                     return;
                 } catch (err) {
