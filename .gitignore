@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# WhatsApp session data (⚠️ VERY IMPORTANT — ආරක්ෂාවට)
+session/
+subbot_sessions/
+temp_session_*/
+
+# Environment & config
+.env
+.env.local
+config.json
+replies.json
+
+# Bot assets
+bot_logo.jpg
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
