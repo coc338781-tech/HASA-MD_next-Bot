@@ -1,11 +1,4 @@
 {
-  "AUTO_READ_STATUS": "true",
-  "AUTO_VOICE": "true",
-  "AUTO_STICKER": "true",
-  "ALWAYS_ONLINE": "true",
-  "BOT_NAME": "HASAA MD",
-  "OWNER_NUMBER": "947XXXXXXXX",
-  "PREFIX": ".",
   "autoVoice": false,
   "autoSticker": false,
   "autoReadStatus": false,
@@ -22,5 +15,15 @@
   "xvideoDl": false,
   "chatbot": false,
   "antiDelete": "off",
-  "fastMode": false
+  "fastMode": false,
+  "BOT_LOGO": "./bot_logo.jpg",
+  "BOT_NAME": "HASAA-MD",
+  "FOOTER": "HASAA-MD",
+  "ALIVE_MSG": "I am alive!",
+  "PREFIX": ".",
+  "SUDO": "",
+  "LANG": "EN",
+  "CHATBOT": "false",
+  "ANTI_DELETE": "false",
+  "FAST_MODE": "false"
 }
