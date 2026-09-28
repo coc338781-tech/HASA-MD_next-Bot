@@ -13,12 +13,16 @@ const commands = new Map();
 const pluginsPath = path.join(process.cwd(), 'plugins');
 
 if (fs.existsSync(pluginsPath)) {
-    const pluginFiles = fs.readdirSync(pluginsPath).filter(file => file.endsWith('.js'));
+    const pluginFiles = fs.readdirSync(pluginsPath).filter(file => file.endsWith('.js') || file.endsWith('.cjs'));
     for (const file of pluginFiles) {
         try {
-            const command = createRequire(import.meta.url)(`./plugins/${file}`);
-            if (command.default?.name || command.name) {
-                commands.set(command.default?.name || command.name, command.default || command);
+            const plugin = createRequire(import.meta.url)(`./plugins/${file}`);
+            const cmd = plugin.default || plugin;
+            if (cmd?.name) {
+                commands.set(cmd.name, cmd);
+                console.log(`✅ Plugin loaded: ${cmd.name} (${file})`);
+            } else {
+                console.warn(`⚠️ Plugin has no name: ${file}`);
             }
         } catch (e) {
             console.error(`Error loading plugin ${file}:`, e);
