@@ -1,5 +1,6 @@
 // Auto Voice Plugin for HASAA-MD
 // Settings: 1.1 (ON), 1.2 (OFF)
+// Replies with a voice note when voice message received
 
 module.exports = {
     name: 'auto-voice',
@@ -16,11 +17,12 @@ module.exports = {
             if (!audioMsg) return;
             if (audioMsg.ptt === false) return;
 
-            const voiceUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+            // Proper OGG voice note URL (short, WhatsApp compatible)
+            const voiceUrl = 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg';
 
             await sock.sendMessage(from, {
                 audio: { url: voiceUrl },
-                mimetype: 'audio/mp4',
+                mimetype: 'audio/ogg; codecs=opus',
                 ptt: true
             }, { quoted: msg });
         } catch (e) {
