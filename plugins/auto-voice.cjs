@@ -16,7 +16,7 @@ module.exports = {
             if (!audioMsg) return;
             if (audioMsg.ptt === false) return;
 
-            const voiceUrl = 'https://www.myinstants.com/media/sounds/hello-1.mp3';
+            const voiceUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
 
             await sock.sendMessage(from, {
                 audio: { url: voiceUrl },
