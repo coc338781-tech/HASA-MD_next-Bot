@@ -3,11 +3,8 @@
 
 const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
-// ASCII Banner (string with \n escapes - safer than template literal)
-const BANNER = "╔══════════════════════════════════╗
-                ║   H A S A A - M D   H A C K E R  ║
-                ║        v2.0 | Ghost Protocol     ║
-                ╚══════════════════════════════════╝";
+// ASCII Banner - uses \n for line breaks (multi-line strings need this in JS)
+const BANNER = "╔══════════════════════════════════╗\n║   H A S A A - M D   H A C K E R  ║\n║        v2.0 | Ghost Protocol     ║\n╚══════════════════════════════════╝";
 
 const hackSteps = [
     BANNER,
@@ -32,7 +29,7 @@ const hackSteps = [
     '📸 *Photos Leaked:* 2,847',
     '💬 *Messages Read:* 18,392',
     '👥 *Contacts Stolen:* 421',
-    '☠️ *HASA- BY HACKED DONE:*
+    '☠️ *HASA-MD BY HACKED DONE* ☠️'
 ];
 
 module.exports = {
