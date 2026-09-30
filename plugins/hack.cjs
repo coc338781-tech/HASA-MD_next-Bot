@@ -5,9 +5,9 @@ const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
 // ASCII Banner (string with \n escapes - safer than template literal)
 const BANNER = "╔══════════════════════════════════╗
-║   H A S A A - M D   H A C K E R  ║
-║        v2.0 | Ghost Protocol     ║
-╚══════════════════════════════════╝";
+                ║   H A S A A - M D   H A C K E R  ║
+                ║        v2.0 | Ghost Protocol     ║
+                ╚══════════════════════════════════╝";
 
 const hackSteps = [
     BANNER,
