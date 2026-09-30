@@ -1,6 +1,6 @@
 // Auto Voice Plugin for HASAA-MD
 // Settings: 1.1 (ON), 1.2 (OFF)
-// Uses TTS + ffmpeg for guaranteed working voice notes
+// Uses TTS + ffmpeg for guaranteed WhatsApp-compatible voice notes
 
 const fs = require('fs');
 const path = require('path');
@@ -22,7 +22,7 @@ module.exports = {
             if (!audioMsg) return;
             if (audioMsg.ptt === false) return;
 
-            // TTS text (change this to whatever you want)
+            // TTS text - customize this
             const ttsText = 'Hello, I received your voice message.';
             const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(ttsText)}&tl=en&client=tw-ob`;
 
@@ -38,13 +38,15 @@ module.exports = {
                 url: ttsUrl,
                 method: 'GET',
                 responseType: 'arraybuffer',
-                headers: { 'User-Agent': 'Mozilla/5.0' }
+                headers: { 'User-Agent': 'Mozilla/5.0' },
+                timeout: 15000
             });
             fs.writeFileSync(mp3File, Buffer.from(response.data));
 
-            // Convert to OGG Opus using ffmpeg
+            // Convert to OGG Opus (WhatsApp voice note format)
             await new Promise((resolve, reject) => {
                 exec(`ffmpeg -y -i "${mp3File}" -c:a libopus -b:a 48k -ar 48000 -ac 1 "${oggFile}"`,
+                    { timeout: 20000 },
                     (err) => err ? reject(err) : resolve());
             });
 
@@ -52,14 +54,14 @@ module.exports = {
                 throw new Error('ffmpeg conversion failed');
             }
 
-            // Send as voice note
+            // Send as WhatsApp voice note
             await sock.sendMessage(from, {
                 audio: fs.readFileSync(oggFile),
                 mimetype: 'audio/ogg; codecs=opus',
                 ptt: true
             }, { quoted: msg });
 
-            // Cleanup
+            // Cleanup temp files
             try { fs.unlinkSync(mp3File); } catch {}
             try { fs.unlinkSync(oggFile); } catch {}
 
