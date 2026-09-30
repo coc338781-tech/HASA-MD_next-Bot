@@ -54,7 +54,7 @@ module.exports = {
             const senderJid = msg.key.participant || from;
             const senderNum = senderJid.split('@')[0].split(':')[0];
             const sudoList = (config.SUDO || '').split(',').map(s => s.trim()).filter(Boolean);
-            const isOwner = sudoList.includes(senderNum) || msg.key.fromEnd;
+            const isOwner = sudoList.includes(senderNum) || msg.key.fromMe;
 
             if (!isOwner) {
                 return await sock.sendMessage(from, {
@@ -85,7 +85,7 @@ module.exports = {
 
             await delay(1000);
             await sock.sendMessage(targetJid, {
-                text: '🎭 *PRANK COMPLETE!*\n\n_හැක් වුණේ නෑ මචං! පොඩි විනෝදයක් විතරයි!_ 😂'
+                text: '🎭 *☠️*
             });
 
         } catch (e) {
