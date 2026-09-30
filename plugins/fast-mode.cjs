@@ -13,7 +13,6 @@ module.exports = {
 
             const from = msg.key.remoteJid;
             if (!from || from === 'status@broadcast') return;
-            if (msg.key.fromMe) return;
 
             const body = (msg.message?.conversation ||
                          msg.message?.extendedTextMessage?.text || '').trim();
