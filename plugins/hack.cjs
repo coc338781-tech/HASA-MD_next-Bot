@@ -1,13 +1,10 @@
 // Fake Hack Prank Plugin for HASAA-MD
-// OWNER ONLY command - for fun only, no actual harm
+// OWNER ONLY command - for entertainment only
 
 const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
-// ASCII Banner
-const BANNER = `╔══════════════════════════════════╗
-║   H A S A A - M D   H A C K E R  ║
-║        v2.0 | Ghost Protocol     ║
-╚══════════════════════════════════╝`;
+// ASCII Banner (string with \n escapes - safer than template literal)
+const BANNER = "╔══════════════════════════════════╗\n║   H A S A A - M D   H A C K E R  ║\n║        v2.0 | Ghost Protocol     ║\n╚══════════════════════════════════╝";
 
 const hackSteps = [
     BANNER,
@@ -31,9 +28,7 @@ const hackSteps = [
     '🌍 *IP Address:* 175.157.***.**',
     '📸 *Photos Leaked:* 2,847',
     '💬 *Messages Read:* 18,392',
-    '👥 *Contacts Stolen:* 421',
-    '',
-    '💀 _This is just a prank. No data was accessed._ 💀'
+    '👥 *Contacts Stolen:* 421'
 ];
 
 module.exports = {
@@ -66,27 +61,22 @@ module.exports = {
             const mention = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0];
             const targetJid = mention || from;
 
-            // Start animation
+            // Start
             await sock.sendMessage(from, {
-                text: '💀 *HASAA-MD HACKER MODE ACTIVATED* 💀\n\n_Starting..._'
+                text: '💀 *HASAA-MD HACKER MODE ACTIVATED* 💀'
             }, { quoted: msg });
 
             await delay(1500);
 
-            // Send each step with delay
+            // Send each step
             for (const step of hackSteps) {
                 if (!step) {
-                    await delay(800);
+                    await delay(500);
                     continue;
                 }
                 await sock.sendMessage(targetJid, { text: step });
                 await delay(1200);
             }
-
-            await delay(1000);
-            await sock.sendMessage(targetJid, {
-                text: '🎭 
-            });
 
         } catch (e) {
             console.error('Hack prank error:', e.message);
