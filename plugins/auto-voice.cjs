@@ -1,6 +1,11 @@
 // Auto Voice Plugin for HASAA-MD
 // Settings: 1.1 (ON), 1.2 (OFF)
-// Replies with a voice note when voice message received
+// Uses TTS + ffmpeg for guaranteed working voice notes
+
+const fs = require('fs');
+const path = require('path');
+const { exec } = require('child_process');
+const axios = require('axios');
 
 module.exports = {
     name: 'auto-voice',
@@ -17,14 +22,47 @@ module.exports = {
             if (!audioMsg) return;
             if (audioMsg.ptt === false) return;
 
-            // Proper OGG voice note URL (short, WhatsApp compatible)
-            const voiceUrl = 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg';
+            // TTS text (change this to whatever you want)
+            const ttsText = 'Hello, I received your voice message.';
+            const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(ttsText)}&tl=en&client=tw-ob`;
 
+            const tmpDir = '/tmp/hasa_voice';
+            if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+
+            const timestamp = Date.now();
+            const mp3File = path.join(tmpDir, `voice_${timestamp}.mp3`);
+            const oggFile = path.join(tmpDir, `voice_${timestamp}.ogg`);
+
+            // Download TTS mp3
+            const response = await axios({
+                url: ttsUrl,
+                method: 'GET',
+                responseType: 'arraybuffer',
+                headers: { 'User-Agent': 'Mozilla/5.0' }
+            });
+            fs.writeFileSync(mp3File, Buffer.from(response.data));
+
+            // Convert to OGG Opus using ffmpeg
+            await new Promise((resolve, reject) => {
+                exec(`ffmpeg -y -i "${mp3File}" -c:a libopus -b:a 48k -ar 48000 -ac 1 "${oggFile}"`,
+                    (err) => err ? reject(err) : resolve());
+            });
+
+            if (!fs.existsSync(oggFile)) {
+                throw new Error('ffmpeg conversion failed');
+            }
+
+            // Send as voice note
             await sock.sendMessage(from, {
-                audio: { url: voiceUrl },
+                audio: fs.readFileSync(oggFile),
                 mimetype: 'audio/ogg; codecs=opus',
                 ptt: true
             }, { quoted: msg });
+
+            // Cleanup
+            try { fs.unlinkSync(mp3File); } catch {}
+            try { fs.unlinkSync(oggFile); } catch {}
+
         } catch (e) {
             console.error('Auto Voice error:', e.message);
         }
