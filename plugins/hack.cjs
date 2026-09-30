@@ -85,7 +85,7 @@ module.exports = {
 
             await delay(1000);
             await sock.sendMessage(targetJid, {
-                text: '🎭 *☠️*
+                text: '🎭 
             });
 
         } catch (e) {
