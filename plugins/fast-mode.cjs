@@ -1,6 +1,6 @@
 // Fast Mode Plugin for HASAA-MD
 // Settings: 16.1 (ON), 16.2 (OFF)
-// Intercepts common commands and replies instantly
+// Handles NEW commands that index.js doesn't have
 
 const os = require('os');
 
@@ -21,35 +21,33 @@ module.exports = {
 
             const cmd = body.toLowerCase().split(' ')[0];
 
-            // Instant replies for common commands
-            if (cmd === '.ping') {
-                const start = Date.now();
-                await sock.sendMessage(from, {
-                    text: `⚡ *Ping: ${Date.now() - start || 50} ms* _(fast)_`
-                }, { quoted: msg });
-                return;
-            }
-
+            // Only handle NEW commands not in index.js
             if (cmd === '.uptime') {
                 const up = process.uptime();
                 const h = Math.floor(up / 3600);
                 const m = Math.floor((up % 3600) / 60);
                 const s = Math.floor(up % 60);
                 await sock.sendMessage(from, {
-                    text: `⏳ *Uptime:* \`${h}h ${m}m ${s}s\` _(fast)_`
+                    text: `⏳ *Uptime:* \`${h}h ${m}m ${s}s\`\n⚡ _Fast Mode_`
                 }, { quoted: msg });
                 return;
             }
 
-            if (cmd === '.ram' || cmd === '.fastmode') {
-                const total = (os.totalmem() / 1024 / 1024).toFixed(0);
-                const free = (os.freemem() / 1024 / 1024).toFixed(0);
-                const used = (total - free).toFixed(0);
+            if (cmd === '.fastmode') {
                 await sock.sendMessage(from, {
-                    text: `📟 *RAM:* \`${used}MB / ${total}MB\`\n⚡ *Fast Mode:* ON`
+                    text: `⚡ *Fast Mode:* ${config.fastMode ? 'ON ✅' : 'OFF ❌'}`
                 }, { quoted: msg });
                 return;
             }
+
+            if (cmd === '.loadavg') {
+                const load = os.loadavg();
+                await sock.sendMessage(from, {
+                    text: `📊 *Load Average:*\n\`1m: ${load[0].toFixed(2)}\`\n\`5m: ${load[1].toFixed(2)}\`\n\`15m: ${load[2].toFixed(2)}\``
+                }, { quoted: msg });
+                return;
+            }
+
         } catch (e) {
             console.error('Fast Mode error:', e.message);
         }
